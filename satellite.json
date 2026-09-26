@@ -1,0 +1,47 @@
+{
+  "$comment": "Read by scripts/install.sh, scripts/smoke.mjs and the sync workflow. Generated; edit satellites.config.json in HelpCode-ai/anythingmcp instead.",
+  "repo": "sap-mcp-server",
+  "owner": "HelpCode-ai",
+  "mainRepo": "HelpCode-ai/anythingmcp",
+  "adapters": [
+    {
+      "slug": "sap-business-one",
+      "region": "de",
+      "requiredEnvVars": [
+        "SAP_B1_HOST",
+        "SAP_B1_PORT",
+        "SAP_B1_COMPANY_DB",
+        "SAP_B1_USERNAME",
+        "SAP_B1_PASSWORD"
+      ]
+    },
+    {
+      "slug": "sap-s4hana-cloud",
+      "region": "intl",
+      "requiredEnvVars": [
+        "S4_BASE_URL",
+        "S4_TOKEN_URL",
+        "S4_CLIENT_ID",
+        "S4_CLIENT_SECRET"
+      ]
+    },
+    {
+      "slug": "sap-concur",
+      "region": "intl",
+      "requiredEnvVars": [
+        "CONCUR_REGION",
+        "CONCUR_CLIENT_ID",
+        "CONCUR_CLIENT_SECRET",
+        "CONCUR_REFRESH_TOKEN"
+      ]
+    }
+  ],
+  "setup": {
+    "type": "adapter"
+  },
+  "smokeCall": {
+    "tool": "b1_list_business_partners",
+    "args": {},
+    "mayFailWithoutCredentials": true
+  }
+}

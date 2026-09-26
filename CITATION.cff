@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: "sap-mcp-server: SAP MCP server: connect SAP Business One, S/4HANA Cloud and Concur to Claude & ChatGPT. Orders, partners, invoices as AI tools."
+message: "If you use this software, please cite AnythingMCP, which it is built on."
+type: software
+authors:
+  - name: "helpcode.ai GmbH"
+repository-code: "https://github.com/HelpCode-ai/sap-mcp-server"
+url: "https://anythingmcp.com/guides/connect-sap-to-claude"
+license: AGPL-3.0-only
+references:
+  - type: software
+    title: "AnythingMCP"
+    authors:
+      - name: "helpcode.ai GmbH"
+    repository-code: "https://github.com/HelpCode-ai/anythingmcp"
