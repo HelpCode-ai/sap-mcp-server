@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: "sap-mcp-server: SAP MCP server: connect SAP Business One, S/4HANA Cloud and Concur to Claude & ChatGPT. Orders, partners, invoices as AI tools."
+title: "sap-mcp-server: SAP MCP server: connect SAP Business One, S/4HANA (Cloud, on-premise via OData or HANA SQL) and Concur to Claude & ChatGPT."
 message: "If you use this software, please cite AnythingMCP, which it is built on."
 type: software
 authors:

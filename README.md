@@ -1,13 +1,11 @@
 # SAP MCP Server
 
-**English** · [Deutsch](docs/README.de.md)
+**Connect 4 SAP products to Claude, ChatGPT and Copilot through one MCP server.** Powered by [AnythingMCP](https://github.com/HelpCode-ai/anythingmcp).
 
-**Connect 3 SAP products to Claude, ChatGPT and Copilot through one MCP server.** Powered by [AnythingMCP](https://github.com/HelpCode-ai/anythingmcp).
+SAP MCP Server connects 4 SAP products to Claude, ChatGPT, Copilot and Cursor through one MCP endpoint: 64 tools in total. Pick the systems you run, add their credentials, and each becomes a set of MCP tools. It runs on AnythingMCP Cloud or self-hosted with Docker, with encrypted credentials and an audit log.
 
-SAP MCP Server connects 3 SAP products to Claude, ChatGPT, Copilot and Cursor through one MCP endpoint: 37 tools in total. Pick the systems you run, add their credentials, and each becomes a set of MCP tools. It runs on AnythingMCP Cloud or self-hosted with Docker, with encrypted credentials and an audit log.
-
-**Last verified:** 2026-09-26 against the systems marked verified in the table (each one's own verification is linked from its row).  
-**Adapter synced:** <!-- synced -->2026-09-26
+**Last verified:** 2026-09-27 against the systems marked verified in the table (each one's own verification is linked from its row).  
+**Adapter synced:** <!-- synced -->2026-09-27
 
 Maintained by [helpcode.ai](https://helpcode.ai), the team that builds and maintains [AnythingMCP](https://github.com/HelpCode-ai/anythingmcp).
 
@@ -16,7 +14,9 @@ Maintained by [helpcode.ai](https://helpcode.ai), the team that builds and maint
 | System | Region | Tools | Auth | Verified live | Cloud | Dedicated repo |
 |---|---|---|---|---|---|---|
 | SAP Business One | DE | 12 | Login session | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-business-one) | [sap-business-one-mcp-server](https://github.com/HelpCode-ai/sap-business-one-mcp-server) |
-| SAP S/4HANA Cloud | Global | 15 | OAuth 2.0 | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-s4hana-cloud) | – |
+| SAP S/4HANA Cloud | Global | 20 | OAuth 2.0 | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-s4hana-cloud) | – |
+| SAP S/4HANA (OData) | Global | 12 | User + password | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-s4hana-odata) | – |
+| SAP S/4HANA (HANA SQL) | Global | 10 | DB user | yes, 2026-09-27 | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-s4hana-hana) | [sap-hana-mcp-server](https://github.com/HelpCode-ai/sap-hana-mcp-server) |
 | SAP Concur | Global | 10 | OAuth 2.0 | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-concur) | – |
 
 "Verified live" means someone ran the connector against a real system; its own repository says how and when. "Not yet" means it follows the vendor's API documentation and has not been confirmed there; reports are welcome.
@@ -24,7 +24,7 @@ Maintained by [helpcode.ai](https://helpcode.ai), the team that builds and maint
 
 ## Your SAP system isn't listed?
 
-Connect it through what it already exposes: its REST/OData API ([openapi-to-mcp](https://github.com/HelpCode-ai/openapi-to-mcp)), its SOAP services ([soap-to-mcp](https://github.com/HelpCode-ai/soap-to-mcp)) or its SQL database, read-only ([sql-to-mcp](https://github.com/HelpCode-ai/sql-to-mcp)). That covers custom and on-premises builds that no catalog adapter will ever know.
+Connect it through what it already exposes: its OData services ([odata-to-mcp](https://github.com/HelpCode-ai/odata-to-mcp)), its REST API ([openapi-to-mcp](https://github.com/HelpCode-ai/openapi-to-mcp)), its SOAP services ([soap-to-mcp](https://github.com/HelpCode-ai/soap-to-mcp)) or its SQL database, read-only ([sql-to-mcp](https://github.com/HelpCode-ai/sql-to-mcp)). That covers custom and on-premises builds that no catalog adapter will ever know.
 
 ## Self-hosted (Docker)
 
@@ -68,10 +68,15 @@ git clone https://github.com/HelpCode-ai/sap-mcp-server.git && cd sap-mcp-server
 | `b1_list_delivery_notes` | List delivery notes (outgoing goods movements). | read |
 | `b1_get_company_info` | Sanity check: returns company metadata (admin info). | read |
 
-#### SAP S/4HANA Cloud (15)
+#### SAP S/4HANA Cloud (20)
 
 | Tool | What it does | Access |
 |---|---|---|
+| `s4_cloud_list_services` | List the OData services this connector reaches. | read |
+| `s4_cloud_describe_service` | The entity sets of an OData service with their business labels, keys and whether they are analytical or parameterised. | read |
+| `s4_cloud_describe_entity` | The fields of one entity set: labels, types, keys, the currency or unit field of each amount, dimensions and measures, and required filters. | read |
+| `s4_cloud_query` | Read rows from an entity set, with field names checked against the service model and server paging followed. | read |
+| `s4_cloud_get_entity` | Read one entity by its key, optionally with related entities. | read |
 | `s4_list_business_partners` | List business partners (combined customers + suppliers) from API_BUSINESS_PARTNER. | read |
 | `s4_get_business_partner` | Get one business partner by its 10-character ID. | read |
 | `s4_list_customers` | List customer master records (subset of business partners). | read |
@@ -87,6 +92,38 @@ git clone https://github.com/HelpCode-ai/sap-mcp-server.git && cd sap-mcp-server
 | `s4_list_products` | List materials / products (item master). | read |
 | `s4_get_product` | Get one product/material by its ID. | read |
 | `s4_list_purchase_requisitions` | List purchase requisition items (pre-PO demand requests). | read |
+
+#### SAP S/4HANA (OData) (12)
+
+| Tool | What it does | Access |
+|---|---|---|
+| `s4_list_services` | List the OData services published by the SAP Gateway (V2 and V4 catalog), filtered by words in their name, title or description. | read |
+| `s4_describe_service` | The entity sets of an OData service with their business labels, keys and whether they are analytical or parameterised. | read |
+| `s4_describe_entity` | The fields of one entity set: labels, types, keys, the currency or unit field of each amount, dimensions and measures, and required filters. | read |
+| `s4_query` | Read rows from an entity set, with field names checked against the service model and server paging followed. | read |
+| `s4_get_entity` | Read one entity by its key, optionally with related entities. | read |
+| `s4_guide` | How to read SAP S/4HANA through OData: the workflow (overview), filter syntax, analytical services and KPIs, finance, sales, inventory and pitfalls. | read |
+| `s4_journal_entry_items` | Journal entry line items from the general ledger (API_JOURNALENTRYITEMBASIC_SRV / A_JournalEntryItemBasic): company code, fiscal year, G/L account, posting… | read |
+| `s4_billing_documents` | Billing documents (API_BILLING_DOCUMENT_SRV / A_BillingDocument): invoices, credit memos and cancellations with date, sales organization, sold-to party, net… | read |
+| `s4_sales_orders` | Sales orders (API_SALES_ORDER_SRV / A_SalesOrder) with type, sales organization, sold-to party, creation date, net amount, currency and processing status. | read |
+| `s4_business_partners` | Business partners (API_BUSINESS_PARTNER / A_BusinessPartner): customers, suppliers and contacts with name, category and grouping. | read |
+| `s4_material_stock` | Material stock (API_MATERIAL_STOCK_SRV / A_MatlStkInAcctMod) per material, plant, storage location, batch and stock type, in the material's base unit. | read |
+| `s4_products` | Products (API_PRODUCT_SRV / A_Product) with type, group and base unit. | read |
+
+#### SAP S/4HANA (HANA SQL) (10)
+
+| Tool | What it does | Access |
+|---|---|---|
+| `sap_guide` | The SAP data model explained for SQL: how to work (overview), client and data types (basics), finance, sales, inventory, procurement, operations, pitfalls… | read |
+| `sap_org_structure` | Company codes (with currency, chart of accounts and fiscal year variant), controlling areas, plants, sales organizations and purchasing organizations of… | read |
+| `sap_search_tables` | Find SAP tables and database views by name pattern or by words in their description (e.g. "billing document", "VBRK", "ZSD%"). | read |
+| `sap_describe_table` | Every field of an SAP table with its business label, key flag, type, the currency or unit field that goes with each amount or quantity, and the check table… | read |
+| `sap_find_fields` | Find which tables hold a business field, by words in its label (e.g. "payment terms", "net due date") or by data element name. | read |
+| `sap_field_values` | What the codes in a field mean: the fixed values of its domain with their descriptions (e.g. VBRK VBTYP, ACDOCA KOART). | read |
+| `sap_table_relations` | How a table joins to others: its foreign keys with the check table and the join condition, and the text table that holds its descriptions. | read |
+| `sap_search_cds_views` | Search SAP's CDS views (the S/4HANA virtual data model) by name or label, e.g. "journal entry", "billing", "stock". | read |
+| `sap_describe_cds_view` | Columns of a CDS view with their labels, default aggregation (SUM marks a measure), currency and unit fields, text fields and foreign-key associations. | read |
+| `sap_query` | Run one read-only SQL SELECT against the SAP HANA database and return up to 1000 rows. | read |
 
 #### SAP Concur (10)
 
@@ -107,21 +144,26 @@ git clone https://github.com/HelpCode-ai/sap-mcp-server.git && cd sap-mcp-server
 ## FAQ
 
 ### Is there an SAP MCP server?
-Yes, this repository: SAP Business One, SAP S/4HANA Cloud and SAP Concur as MCP tools for Claude, ChatGPT and Copilot, through AnythingMCP.
+Yes, this repository: SAP Business One, SAP S/4HANA (Cloud Public Edition, plus on-premise and Private Cloud through OData or HANA SQL) and SAP Concur as MCP tools for Claude, ChatGPT and Copilot, through AnythingMCP.
 
 ### Which SAP systems are covered?
-SAP Business One (Service Layer), SAP S/4HANA Cloud Public Edition (OData APIs, OAuth 2.0 via BTP) and SAP Concur (expense and travel). S/4HANA on-premise and ECC connect through their Gateway OData services as a custom REST connector, or read-only through the database.
+SAP Business One (Service Layer), SAP S/4HANA Cloud Public Edition (OData APIs, OAuth 2.0 via BTP), SAP S/4HANA on-premise and Private Cloud (OData through SAP Gateway, or SQL on the HANA database) and SAP Concur (expense and travel). ECC and BW with SAP Gateway connect through the OData connector as well.
+
+### OData or HANA SQL for S/4HANA on-premise?
+OData goes through SAP Gateway: SAP checks the technical user's authorizations on every call and only published services are reachable, which is what SAP's API policy expects from third-party integrations. HANA SQL reads every table and CDS view, with SAP's data dictionary as the map, and aggregates on the database; it bypasses SAP's application authorizations, so the database grants are the boundary, and your HANA licence must allow third-party SQL access. Both can run on the same MCP server.
 
 ### Can the AI change data in SAP?
-SAP Business One can create sales orders and Concur can submit expense reports and act on approvals. The S/4HANA Cloud tools only read. Roles decide which tools each MCP server exposes.
+SAP Business One can create sales orders and Concur can submit expense reports and act on approvals. The S/4HANA tools only read: the OData built-ins are read-only, and the HANA session runs `SET TRANSACTION READ ONLY`. Roles decide which tools each MCP server exposes.
 
 ### Have these been tested against live SAP systems?
-Not yet; the "Verified live" column says so per product. The adapters follow SAP's API documentation.
+The HANA SQL connector was verified on 2026-09-27 against an SAP S/4HANA 2025 Private Cloud system, every tool. The OData engine was verified against public OData services, not yet against a live SAP Gateway. The other adapters follow SAP's API documentation; the "Verified live" column says so per product.
 
 ## Related
 
 - [sap-business-one-mcp-server](https://github.com/HelpCode-ai/sap-business-one-mcp-server): SAP Business One MCP server: Claude & ChatGPT read partners, items, orders, invoices and quotations, and create sales orders.
-- [erp-mcp-server](https://github.com/HelpCode-ai/erp-mcp-server): ERP MCP server: connect 16 ERPs (SAP, Odoo, JTL-Wawi, Xentral, weclapp, ERPNext…) to Claude & ChatGPT. Self-hosted or cloud.
+- [sap-hana-mcp-server](https://github.com/HelpCode-ai/sap-hana-mcp-server): SAP HANA MCP server: Claude & ChatGPT read SAP S/4HANA with SQL, guided by SAP's own data dictionary and CDS views. Read-only.
+- [odata-to-mcp](https://github.com/HelpCode-ai/odata-to-mcp): OData to MCP: turn any OData V2 or V4 service, SAP Gateway included, into MCP tools for Claude & ChatGPT. Reads $metadata, no code.
+- [erp-mcp-server](https://github.com/HelpCode-ai/erp-mcp-server): ERP MCP server: connect 17 ERPs (SAP, Odoo, JTL-Wawi, Xentral, weclapp, ERPNext…) to Claude & ChatGPT. Self-hosted or cloud.
 - [soap-to-mcp](https://github.com/HelpCode-ai/soap-to-mcp): Turn any SOAP/WSDL web service into MCP tools for Claude & ChatGPT. Legacy SOAP APIs as AI tools, no code, self-hosted.
 - [AnythingMCP](https://github.com/HelpCode-ai/anythingmcp): the open-source MCP server and gateway this repository is built on.
 

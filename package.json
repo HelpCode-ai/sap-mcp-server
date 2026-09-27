@@ -2,7 +2,7 @@
   "name": "sap-mcp-server",
   "private": true,
   "type": "module",
-  "description": "SAP MCP server: connect SAP Business One, S/4HANA Cloud and Concur to Claude & ChatGPT. Orders, partners, invoices as AI tools.",
+  "description": "SAP MCP server: connect SAP Business One, S/4HANA (Cloud, on-premise via OData or HANA SQL) and Concur to Claude & ChatGPT.",
   "scripts": {
     "smoke": "node scripts/smoke.mjs",
     "render-tools": "node scripts/render-tools.mjs",

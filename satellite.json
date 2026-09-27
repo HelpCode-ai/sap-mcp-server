@@ -26,6 +26,32 @@
       ]
     },
     {
+      "slug": "sap-s4hana-odata",
+      "region": "intl",
+      "requiredEnvVars": [
+        "SAP_ODATA_BASE_URL",
+        "SAP_CLIENT",
+        "SAP_LANGUAGE",
+        "SAP_ODATA_USER",
+        "SAP_ODATA_PASSWORD"
+      ]
+    },
+    {
+      "slug": "sap-s4hana-hana",
+      "region": "intl",
+      "requiredEnvVars": [
+        "SAP_HANA_HOST",
+        "SAP_HANA_PORT",
+        "SAP_HANA_TENANT",
+        "SAP_HANA_SCHEMA",
+        "SAP_CLIENT",
+        "SAP_LANGUAGE",
+        "SAP_HANA_TLS",
+        "SAP_HANA_USER",
+        "SAP_HANA_PASSWORD"
+      ]
+    },
+    {
       "slug": "sap-concur",
       "region": "intl",
       "requiredEnvVars": [
