@@ -2,10 +2,10 @@
 
 **Connect 4 SAP products to Claude, ChatGPT and Copilot through one MCP server.** Powered by [AnythingMCP](https://github.com/HelpCode-ai/anythingmcp).
 
-SAP MCP Server connects 4 SAP products to Claude, ChatGPT, Copilot and Cursor through one MCP endpoint: 64 tools in total. Pick the systems you run, add their credentials, and each becomes a set of MCP tools. It runs on AnythingMCP Cloud or self-hosted with Docker, with encrypted credentials and an audit log.
+SAP MCP Server connects 4 SAP products to Claude, ChatGPT, Copilot and Cursor through one MCP endpoint: 76 tools in total. Pick the systems you run, add their credentials, and each becomes a set of MCP tools. It runs on AnythingMCP Cloud or self-hosted with Docker, with encrypted credentials and an audit log.
 
 **Last verified:** 2026-09-27 against the systems marked verified in the table (each one's own verification is linked from its row).  
-**Adapter synced:** <!-- synced -->2026-09-27
+**Adapter synced:** <!-- synced -->2026-10-09
 
 Maintained by [helpcode.ai](https://helpcode.ai), the team that builds and maintains [AnythingMCP](https://github.com/HelpCode-ai/anythingmcp).
 
@@ -13,7 +13,7 @@ Maintained by [helpcode.ai](https://helpcode.ai), the team that builds and maint
 
 | System | Region | Tools | Auth | Verified live | Cloud | Dedicated repo |
 |---|---|---|---|---|---|---|
-| SAP Business One | DE | 12 | Login session | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-business-one) | [sap-business-one-mcp-server](https://github.com/HelpCode-ai/sap-business-one-mcp-server) |
+| SAP Business One | DE | 24 | Login session | yes, 2026-10-09 | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-business-one) | [sap-business-one-mcp-server](https://github.com/HelpCode-ai/sap-business-one-mcp-server) |
 | SAP S/4HANA Cloud | Global | 20 | OAuth 2.0 | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-s4hana-cloud) | – |
 | SAP S/4HANA (OData) | Global | 12 | User + password | not yet | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-s4hana-odata) | – |
 | SAP S/4HANA (HANA SQL) | Global | 10 | DB user | yes, 2026-09-27 | [install](https://cloud.anythingmcp.com/connectors/store?install=sap-s4hana-hana) | [sap-hana-mcp-server](https://github.com/HelpCode-ai/sap-hana-mcp-server) |
@@ -51,21 +51,33 @@ git clone https://github.com/HelpCode-ai/sap-mcp-server.git && cd sap-mcp-server
 ## Tools
 
 <!-- tools:start (generated from adapter/*.json, do not edit) -->
-#### SAP Business One (12)
+#### SAP Business One (24)
 
 | Tool | What it does | Access |
 |---|---|---|
-| `b1_list_business_partners` | List business partners (customers, suppliers, leads). | read |
-| `b1_get_business_partner` | Get one business partner by CardCode. | read |
-| `b1_list_items` | List inventory items (articles). | read |
-| `b1_get_item` | Get one item by ItemCode. | read |
-| `b1_list_orders` | List sales orders. | read |
-| `b1_get_order` | Get one sales order by DocEntry (integer primary key). | read |
+| `b1_list_business_partners` | List business partners (customers, suppliers, leads) with their code, name, type and balance. | read |
+| `b1_get_business_partner` | Read one business partner by CardCode: addresses, contacts, payment terms and balance. | read |
+| `b1_list_items` | List inventory items with their code, name, prices and stock per warehouse (ItemWarehouseInfoCollection). | read |
+| `b1_get_item` | Read one item by ItemCode: prices, units, groups and stock in each warehouse. | read |
+| `b1_list_orders` | List sales orders with their customer, dates, totals and status (bost_Open / bost_Close). | read |
+| `b1_get_order` | Read one sales order by DocEntry (integer key, not DocNum), with all its lines. | read |
 | `b1_create_order` | Create a new sales order. | write |
-| `b1_list_invoices` | List A/R invoices. | read |
-| `b1_get_invoice` | Get one A/R invoice by DocEntry. | read |
-| `b1_list_quotations` | List sales quotations. | read |
-| `b1_list_delivery_notes` | List delivery notes (outgoing goods movements). | read |
+| `b1_list_invoices` | List A/R invoices (sales invoices to customers). | read |
+| `b1_get_invoice` | Read one A/R invoice by DocEntry (integer key, not DocNum), with lines and taxes. | read |
+| `b1_list_quotations` | List sales quotations with their customer, validity date, totals and status. | read |
+| `b1_list_delivery_notes` | List delivery notes (goods shipped to customers) with their customer, date and lines. | read |
+| `b1_list_credit_notes` | List A/R credit memos (credit notes issued to customers) with their totals and status. | read |
+| `b1_list_purchase_invoices` | List A/P invoices (supplier invoices). | read |
+| `b1_get_purchase_invoice` | Read one A/P invoice in full, with its lines, taxes and withholding tax. | read |
+| `b1_list_purchase_credit_notes` | List A/P credit memos (credit notes received from suppliers). | read |
+| `b1_list_vendor_payments` | List outgoing payments to suppliers, with the invoices each one settles (PaymentInvoices). | read |
+| `b1_list_incoming_payments` | List incoming payments from customers, with the invoices each one settles (PaymentInvoices). | read |
+| `b1_list_journal_entries` | List journal entries with their lines (JournalEntryLines: account, debit, credit). | read |
+| `b1_get_journal_entry` | Read one journal entry by JdtNum (TransId) with all its lines: account, debit and credit. | read |
+| `b1_list_chart_of_accounts` | List G/L accounts of the chart of accounts with their code, name, type and balance. | read |
+| `b1_list_bank_statements` | List imported bank statements with their account, date and balances. | read |
+| `b1_list_external_reconciliations` | List external (bank) reconciliations of G/L or business partner accounts in a date or number range. | read |
+| `b1_get_external_reconciliation` | Read one external (bank) reconciliation: amount, date, type and the journal entry and bank statement lines it matched. | read |
 | `b1_get_company_info` | Sanity check: returns company metadata (admin info). | read |
 
 #### SAP S/4HANA Cloud (20)
@@ -160,7 +172,7 @@ The HANA SQL connector was verified on 2026-09-27 against an SAP S/4HANA 2025 Pr
 
 ## Related
 
-- [sap-business-one-mcp-server](https://github.com/HelpCode-ai/sap-business-one-mcp-server): SAP Business One MCP server: Claude & ChatGPT read partners, items, orders, invoices and quotations, and create sales orders.
+- [sap-business-one-mcp-server](https://github.com/HelpCode-ai/sap-business-one-mcp-server): SAP Business One MCP server: Claude & ChatGPT read partners, items, orders, invoices, payments and journal entries, and create sales orders.
 - [sap-hana-mcp-server](https://github.com/HelpCode-ai/sap-hana-mcp-server): SAP HANA MCP server: Claude & ChatGPT read SAP S/4HANA with SQL, guided by SAP's own data dictionary and CDS views. Read-only.
 - [odata-to-mcp](https://github.com/HelpCode-ai/odata-to-mcp): OData to MCP: turn any OData V2 or V4 service, SAP Gateway included, into MCP tools for Claude & ChatGPT. Reads $metadata, no code.
 - [erp-mcp-server](https://github.com/HelpCode-ai/erp-mcp-server): ERP MCP server: connect 17 ERPs (SAP, Odoo, JTL-Wawi, Xentral, weclapp, ERPNext…) to Claude & ChatGPT. Self-hosted or cloud.
