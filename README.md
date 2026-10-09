@@ -5,7 +5,7 @@
 SAP MCP Server connects 4 SAP products to Claude, ChatGPT, Copilot and Cursor through one MCP endpoint: 64 tools in total. Pick the systems you run, add their credentials, and each becomes a set of MCP tools. It runs on AnythingMCP Cloud or self-hosted with Docker, with encrypted credentials and an audit log.
 
 **Last verified:** 2026-09-27 against the systems marked verified in the table (each one's own verification is linked from its row).  
-**Adapter synced:** <!-- synced -->2026-09-27
+**Adapter synced:** <!-- synced -->2026-10-09
 
 Maintained by [helpcode.ai](https://helpcode.ai), the team that builds and maintains [AnythingMCP](https://github.com/HelpCode-ai/anythingmcp).
 
